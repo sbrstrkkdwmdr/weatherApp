@@ -8,26 +8,23 @@ import os.path
 input = sg.Input('', enable_events=True, key='-INPUT-', font=('Arial Bold', 20), expand_x=True, justification='left')
 
 dailyColumn = [
-        [
             [sg.TabGroup([
                 [ 
-                    sg.Tab('Today', 'data'),
-                    sg.Tab('Tomorrow', 'data'),
-                    sg.Tab('Overmorrow', 'data'),
-                    sg.Tab('Day 4', 'data'),
-                    sg.Tab('Day 5', 'data'),
+                    sg.Tab('Today', [[sg.Text("null")],]),
+                    sg.Tab('Tomorrow', [[sg.Text("null")],]),
+                    sg.Tab('Day 3', [[sg.Text("null")],]),
+                    sg.Tab('Day 4', [[sg.Text("null")],]),
+                    sg.Tab('Day 5', [[sg.Text("null")],]),
                 ]], 
-                    key='-TAB GROUP-', expand_x=True, expand_y=True),
+                    key='-tabgroup-', expand_x=True, expand_y=True),
            ]
-        ]
     ]
-
 graphColumn = [
         [sg.Text("nbl;gl")],
 ]
 
 layout = [
-    [sg.Text("Hello from PySimpleGUI")], 
+    [sg.Text("Basic weather application")], 
     [input],
     [sg.Button("SEARCH")],
     [sg.Column(dailyColumn),
@@ -44,10 +41,11 @@ window = sg.Window("Simple weather app idk", layout, size=(720, 720))
 
 while True:
     event, values = window.read()
+    window.read()
     if event == "QUIT" or event == sg.WIN_CLOSED:
         break
     if event == "SEARCH":
-        window.Title = "uwu"
+        print("search")
         request:str = values['-INPUT-']
         if len(request) < 1:
             print("Error - input is too short")
@@ -72,11 +70,18 @@ while True:
                                 sg.Tab('Day 3', dailyInfoToLayout(dailyData[2])),
                                 sg.Tab('Day 4', dailyInfoToLayout(dailyData[3])),
                                 sg.Tab('Day 5', dailyInfoToLayout(dailyData[4])),
-                                ]], 
-                                key='-TAB GROUP-', expand_x=True, expand_y=True),
+                                ]],  expand_x=True, expand_y=True),
                ]
                     ]
                     print('Weather get')
+                    window['-tabgroup-'].update([ 
+                                sg.Tab('Today', dailyInfoToLayout(dailyData[0])),
+                                sg.Tab('Tomorrow', dailyInfoToLayout(dailyData[1])),
+                                sg.Tab('Day 3', dailyInfoToLayout(dailyData[2])),
+                                sg.Tab('Day 4', dailyInfoToLayout(dailyData[3])),
+                                sg.Tab('Day 5', dailyInfoToLayout(dailyData[4])),
+                                ])
+                    window.Refresh()
                 else:
                     print("Error - failed to retrieve weather data")
             else:
