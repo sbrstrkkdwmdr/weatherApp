@@ -11,7 +11,7 @@ class geolocale:
     admin4_id: int;
     timezone: str;
     population: int;
-    postcodes: list; # of strings
+    postcodes: list[str];
     country_id: int;
     country: str;
     admin1: str;
@@ -20,7 +20,7 @@ class geolocale:
     admin4: str;
 
 class geoResults:  
-    results: list; # of geoLocale 
+    results: list[geolocale];  
 
 class currentWeather:
         temperature: float;
@@ -31,79 +31,79 @@ class currentWeather:
         time: str;
 
 class weatherDataTypesHourly: 
-    time: list;
-    temperature_2m: list;
-    relativehumidity_2m: list;
-    dewpoint_2m: list;
-    apparent_temperature: list;
-    pressure_msl: list;
-    surface_pressure: list;
-    cloudcover: list;
-    cloudcover_low: list;
-    cloudcover_mid: list;
-    cloudcover_high: list;
-    windspeed_10m: list;
-    windspeed_80m: list;
-    windspeed_120m: list;
-    windspeed_180m: list;
-    winddirection_10m: list;
-    winddirection_80m: list;
-    winddirection_120m: list;
-    winddirection_180m: list;
-    windgusts_10m: list;
-    shortwave_radiation: list;
-    direction_radiation: list;
-    direction_normal_irradiance: list;
-    diffuse_radiation: list;
-    vapor_pressure_deficit: list;
-    cape: list;
-    evapotranspiration: list;
-    et0_fao_evapotranspiration: list;
-    precipitation: list;
-    snowfall: list;
-    precipitation_probability: list;
-    rain: list;
-    showers: list;
-    weathercode: list;
-    snow_depth: list;
-    freezlinglevel_height: list;
-    visibility: list;
-    soil_temperature_0cm: list;
-    soil_temperature_6cm: list;
-    soil_temperature_18cm: list;
-    soil_temperature_54cm: list;
-    soil_moisture_0_1cm: list;
-    soil_moisture_1_3cm: list;
-    soil_moisture_3_9cm: list;
-    soil_moisture_9_27cm: list;
-    soil_moisture_27_81cm: list;
-    is_day: list;
+    time: list[str];
+    temperature_2m: list[float];
+    relativehumidity_2m: list[float];
+    dewpoint_2m: list[float];
+    apparent_temperature: list[float];
+    pressure_msl: list[float];
+    surface_pressure: list[float];
+    cloudcover: list[float];
+    cloudcover_low: list[float];
+    cloudcover_mid: list[float];
+    cloudcover_high: list[float];
+    windspeed_10m: list[float];
+    windspeed_80m: list[float];
+    windspeed_120m: list[float];
+    windspeed_180m: list[float];
+    winddirection_10m: list[float];
+    winddirection_80m: list[float];
+    winddirection_120m: list[float];
+    winddirection_180m: list[float];
+    windgusts_10m: list[float];
+    shortwave_radiation: list[float];
+    direction_radiation: list[float];
+    direction_normal_irradiance: list[float];
+    diffuse_radiation: list[float];
+    vapor_pressure_deficit: list[float];
+    cape: list[float];
+    evapotranspiration: list[float];
+    et0_fao_evapotranspiration: list[float];
+    precipitation: list[float];
+    snowfall: list[float];
+    precipitation_probability: list[float];
+    rain: list[float];
+    showers: list[float];
+    weathercode: list[float];
+    snow_depth: list[float];
+    freezlinglevel_height: list[float];
+    visibility: list[float];
+    soil_temperature_0cm: list[float];
+    soil_temperature_6cm: list[float];
+    soil_temperature_18cm: list[float];
+    soil_temperature_54cm: list[float];
+    soil_moisture_0_1cm: list[float];
+    soil_moisture_1_3cm: list[float];
+    soil_moisture_3_9cm: list[float];
+    soil_moisture_9_27cm: list[float];
+    soil_moisture_27_81cm: list[float];
+    is_day: list[float];
 
 
 class weatherDataTypesDaily: 
-    time: list;
-    temperature_2m_max: list;
-    temperature_2m_min: list;
-    apparent_temperature_max: list;
-    apparent_temperature_min: list;
-    precipitation_sum: list;
-    rain_sum: list;
-    showers_sum: list;
-    snowfall_sum: list;
-    precipitation_hours: list;
-    precipitation_probability_max: list;
-    precipitation_probability_min: list;
-    precipitation_probability_mean: list;
-    weathercode: list;
-    sunrise: list;
-    sunset: list;
-    windspeed_10m_max: list;
-    windgusts_10m_max: list;
-    winddirection_10m_dominant: list;
-    shortwave_radiation_sum: list;
-    et0_fao_evapotranspiration: list;
-    uv_index_max: list;
-    uv_index_clear_sky_max: list;
+    time: list[str];
+    temperature_2m_max: list[float];
+    temperature_2m_min: list[float];
+    apparent_temperature_max: list[float];
+    apparent_temperature_min: list[float];
+    precipitation_sum: list[float];
+    rain_sum: list[float];
+    showers_sum: list[float];
+    snowfall_sum: list[float];
+    precipitation_hours: list[float];
+    precipitation_probability_max: list[float];
+    precipitation_probability_min: list[float];
+    precipitation_probability_mean: list[float];
+    weathercode: list[float];
+    sunrise: list[float];
+    sunset: list[float];
+    windspeed_10m_max: list[float];
+    windgusts_10m_max: list[float];
+    winddirection_10m_dominant: list[float];
+    shortwave_radiation_sum: list[float];
+    et0_fao_evapotranspiration: list[float];
+    uv_index_max: list[float];
+    uv_index_clear_sky_max: list[float];
 
 
 class weatherDataUnitsHourly: 
@@ -195,3 +195,8 @@ class weatherData:
     daily_units: weatherDataUnitsDaily;
     error: bool;
     reason: str;
+    
+class AttrDict(dict):
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self

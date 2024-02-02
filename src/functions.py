@@ -1,6 +1,8 @@
 import requests
 import json 
 import src.customClasses as cClass
+import PySimpleGUI as sg 
+import math
 
 def requestLocation(name:str) -> requests.Response:
     baseurl = f'https://geocoding-api.open-meteo.com/v1/search?name={name.replace(" ", "+")}&count=10&language=en&format=json'
@@ -111,16 +113,92 @@ def formatWeatherCode(code:int):
             string = 'Thunderstorms and heavy hail'
             icon = '⛈'
     
-    return {
-        string:string,
-        icon:icon
-    }
+    return [
+        string,
+        icon
+    ]
+
+def timeOnly(string:str) -> str:
+    split = string.split('T')
+    return split[1]
+
+class direction: 
+    name: str;
+    travels: str;
+    emoji: str;
+    short: str;
+x:direction = {}
+
+def windDirection(angle:float):
+    directions:list[direction] = [
+        { "name": 'North', "travels": 'South', "emoji": '⬇', "short": 'N', },
+        { "name": 'North-Northeast', "travels": 'South-Southwest', "emoji": '↙', "short": 'NNE', },
+        { "name": 'Northeast', "travels": 'Southwest', "emoji": '↙', "short": 'NE', },
+        { "name": 'East-Northeast', "travels": 'West-Southwest', "emoji": '↙', "short": 'ENE', },
+        { "name": 'East', "travels": 'West', "emoji": '⬅', "short": 'E', },
+        { "name": 'East-Southeast', "travels": 'West-Northwest', "emoji": '↖', "short": 'ESE', },
+        { "name": 'Southeast', "travels": 'Northwest', "emoji": '↖', "short": 'SE', },
+        { "name": 'South-Southeast', "travels": 'North-Northwest', "emoji": '↖', "short": 'SSE', },
+        { "name": 'South', "travels": 'North', "emoji": '⬆', "short": 'S', },
+        { "name": 'South-Southwest', "travels": 'North-Northeast', "emoji": '↗', "short": 'SSW', },
+        { "name": 'Southwest', "travels": 'Northeast', "emoji": '↗', "short": 'SW', },
+        { "name": 'West-Southwest', "travels": 'East-Northeast', "emoji": '↗', "short": 'WSW', },
+        { "name": 'West', "travels": 'East', "emoji": '➡', "short": 'W', },
+        { "name": 'West-Northwest', "travels": 'East-Southeast', "emoji": '↘', "short": 'WNW', },
+        { "name": 'Northwest', "travels": 'Southeast', "emoji": '↘', "short": 'NW', },
+        { "name": 'North-Northwest', "travels": 'South-Southeast', "emoji": '↘', "short": 'NNW', },
+        { "name": 'North', "travels": 'South', "emoji": '⬇', "short": 'N', },
+        { "name": 'North-Northeast', "travels": 'South-Southwest', "emoji": '↙', "short": 'NNE', },
+        { "name": 'Northeast', "travels": 'Southwest', "emoji": '↙', "short": 'NE', },
+        { "name": 'East-Northeast', "travels": 'West-Southwest', "emoji": '↙', "short": 'ENE', },
+        { "name": 'East', "travels": 'West', "emoji": '⬅', "short": 'E', },
+        { "name": 'East-Southeast', "travels": 'West-Northwest', "emoji": '↖', "short": 'ESE', },
+        { "name": 'Southeast', "travels": 'Northwest', "emoji": '↖', "short": 'SE', },
+        { "name": 'South-Southeast', "travels": 'North-Northwest', "emoji": '↖', "short": 'SSE', },
+        { "name": 'South', "travels": 'North', "emoji": '⬆', "short": 'S', },
+        { "name": 'South-Southwest', "travels": 'North-Northeast', "emoji": '↗', "short": 'SSW', },
+        { "name": 'Southwest', "travels": 'Northeast', "emoji": '↗', "short": 'SW', },
+        { "name": 'West-Southwest', "travels": 'East-Northeast', "emoji": '↗', "short": 'WSW', },
+        { "name": 'West', "travels": 'East', "emoji": '➡', "short": 'W', },
+        { "name": 'West-Northwest', "travels": 'East-Southeast', "emoji": '↘', "short": 'WNW', },
+        { "name": 'Northwest', "travels": 'Southeast', "emoji": '↘', "short": 'NW', },
+        { "name": 'North-Northwest', "travels": 'South-Southeast', "emoji": '↘', "short": 'NNW', },
+    ]
+    normalizedAngle = (angle % 360 + 360) % 360
+    index = math.floor(normalizedAngle / 22.5)
+    return directions[index]
 
 def formatDailyInfo(data:cClass.weatherData):
     stringList = []
-    counter = 0
-    daily = data.daily
-    for val in daily.time:
-        
-        counter+=1
+    count = 0
+    daily = data['daily']
+    # weatherType high/low precip% wind->dir+speed(avg)
+    for val in daily["time"]:
+        weather = formatWeatherCode(daily["weathercode"][count])
+        weatherstring = f'{weather[1]}{weather[0]} | '
+        tempStr = f'{daily["temperature_2m_max"][count]}/{daily["temperature_2m_min"][count]}'
+        precipNum = ''
+        if daily["precipitation_sum"][count] > 0:
+            precipNum = f'({daily["precipitation_sum"][count]})'
+ 
+        precipChStr = f'{daily["precipitation_probability_mean"][count]}% chance of rain {precipNum}'
+        windDir = windDirection(daily["winddirection_10m_dominant"][count])
+        windStr = f'{daily["windspeed_10m_max"][count]}km/h ({windDir["emoji"]}{windDir["short"]}{daily["winddirection_10m_dominant"][count]}°)'
+        sunrisesetStr = f'{timeOnly(daily["sunrise"][count])}->{timeOnly(daily["sunset"][count])}'
+        string = f'{val}\n{weatherstring}\n{precipChStr}\n{tempStr}\n{sunrisesetStr}\n{windStr}'
+        stringList.append(string)
+        count+=1
+    return stringList
+
+def dailyInfoToLayout(data:str):
+    dataSplit = data.split('\n')
+    tempLayout = [
+        [sg.Text(dataSplit[0])],
+        [sg.Text(dataSplit[1])],
+        [sg.Text(dataSplit[2])],
+        [sg.Text(dataSplit[3])],
+        [sg.Text(dataSplit[4])],
+        [sg.Text(dataSplit[5])]
+    ]
+    return tempLayout
         
