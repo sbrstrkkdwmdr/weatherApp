@@ -1,5 +1,7 @@
 # weatherApp
  
+Simple weather app
+
 ## run
 
 install python (3.11) [here](https://www.python.org/downloads/)
