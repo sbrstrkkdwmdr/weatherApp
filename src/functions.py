@@ -209,7 +209,7 @@ def formatDailyInfo(data:cClass.weatherData):
         windStr = f'Winds: {daily["windspeed_10m_max"][count]}km/h ({windDir["emoji"]}{windDir["short"]} {daily["winddirection_10m_dominant"][count]}°)'
         windGustStr = f'Gusts: {daily["windgusts_10m_max"][count]}km/h ({windDirG["emoji"]}{windDirG["short"]} {daily["winddirection_10m_dominant"][count]}°)'
         sunrisesetStr = f'Sunrise: {timeOnly(daily["sunrise"][count])}\nSunset: {timeOnly(daily["sunset"][count])}'
-        string = f'{val}\n{weatherstring}\n{precipChStr}\n{tempStr}\n{sunrisesetStr}\n{windStr}\n${windGustStr}'
+        string = f'{val}\n{weatherstring}\n{precipChStr}\n{tempStr}\n{sunrisesetStr}\n{windStr}\n{windGustStr}'
         stringList.append(string)
         count+=1
     return stringList
