@@ -10,11 +10,11 @@ input = sg.Input('', enable_events=True, key='-INPUT-', font=('Arial Bold', 20),
 dailyColumn = [
             [sg.TabGroup([
                 [ 
-                    sg.Tab('Today', [[sg.Text("null")],]),
-                    sg.Tab('Tomorrow', [[sg.Text("null")],]),
-                    sg.Tab('Day 3', [[sg.Text("null")],]),
-                    sg.Tab('Day 4', [[sg.Text("null")],]),
-                    sg.Tab('Day 5', [[sg.Text("null")],]),
+                    sg.Tab('Today', [[sg.Text("null", key='day1data', visible=False)], ], key='day1'),
+                    sg.Tab('Tomorrow', [[sg.Text("null", key='day2data', visible=False)],], key='day2'),
+                    sg.Tab('Day 3', [[sg.Text("null", key='day3data', visible=False)],], key='day3'),
+                    sg.Tab('Day 4', [[sg.Text("null", key='day4data', visible=False)],], key='day4'),
+                    sg.Tab('Day 5', [[sg.Text("null", key='day5data', visible=False)],], key='day5'),
                 ]], 
                     key='-tabgroup-', expand_x=True, expand_y=True),
            ]
@@ -63,13 +63,11 @@ while True:
                         days.append(day.split('\n')[0])
                         
                     print('Weather get')
-                    window['-tabgroup-'].update([ 
-                                sg.Tab('Today', dailyInfoToLayout(dailyData[0])),
-                                sg.Tab('Tomorrow', dailyInfoToLayout(dailyData[1])),
-                                sg.Tab('Day 3', dailyInfoToLayout(dailyData[2])),
-                                sg.Tab('Day 4', dailyInfoToLayout(dailyData[3])),
-                                sg.Tab('Day 5', dailyInfoToLayout(dailyData[4])),
-                                ])
+                    window['day1data'].update(dailyData[0], visible=True)
+                    window['day2data'].update(dailyData[1], visible=True)
+                    window['day3data'].update(dailyData[2], visible=True)
+                    window['day4data'].update(dailyData[3], visible=True)
+                    window['day5data'].update(dailyData[4], visible=True)
                     window.Refresh()
                 else:
                     print("Error - failed to retrieve weather data")

@@ -1,0 +1,23 @@
+[ADD] = addition
+[REM] = removal
+[FIX] = fix
+[QOL] = quality of life
+[MAJ] = major breaking change
+[MIN] = minor change 
+
+commit: the final commit for that version
+
+VERSION 
+0.0.0
+2024-02-02
+commit: null
+changes:
+[MAJ] started this
+
+VERSION
+0.0.1
+date_time
+commit: null
+changes:
+[FIX] update tab when data is retreived
+[QOL]
