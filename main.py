@@ -50,29 +50,18 @@ while True:
         if len(request) < 1:
             print("Error - input is too short")
         else:
-            location:requests.Response = requestLocation(request)
-            locationData:cClass.geoResults = location.json()
-            if location.status_code == 200:
-                data:requests.Response = requestWeather(locationData['results'][0])
-                weatherData:cClass.weatherData = cClass.AttrDict(data.json())
-                if data.status_code == 200:
+            location = requestLocation(request)
+            locationData:cClass.geoResults = location[1]
+            if location[0] == 200:
+                data = requestWeather(locationData['results'][0])
+                weatherData:cClass.weatherData = data[1]
+                if data[0] == 200:
                     # weather data ong
                     dailyData = formatDailyInfo(weatherData)
                     days = []
                     for day in dailyData:
                         days.append(day.split('\n')[0])
                         
-                    dailyColumn = [
-                        [sg.TabGroup([
-                            [ 
-                                sg.Tab('Today', dailyInfoToLayout(dailyData[0])),
-                                sg.Tab('Tomorrow', dailyInfoToLayout(dailyData[1])),
-                                sg.Tab('Day 3', dailyInfoToLayout(dailyData[2])),
-                                sg.Tab('Day 4', dailyInfoToLayout(dailyData[3])),
-                                sg.Tab('Day 5', dailyInfoToLayout(dailyData[4])),
-                                ]],  expand_x=True, expand_y=True),
-               ]
-                    ]
                     print('Weather get')
                     window['-tabgroup-'].update([ 
                                 sg.Tab('Today', dailyInfoToLayout(dailyData[0])),

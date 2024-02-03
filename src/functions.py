@@ -3,26 +3,48 @@ import json
 import src.customClasses as cClass
 import PySimpleGUI as sg 
 import math
+import src.define as constants
 
-def requestLocation(name:str) -> requests.Response:
+def requestLocation(name:str):
     baseurl = f'https://geocoding-api.open-meteo.com/v1/search?name={name.replace(" ", "+")}&count=10&language=en&format=json'
-    res = requests.get(baseurl)
-    saveDataToFile(res.json(), 'locationData.json')
-    return res
+    res:requests.Response = None
+    statcode = 404
+    if constants.testmode == True:
+        tempfile = open('locationData.json', 'r')
+        res = json.load(tempfile)
+        tempfile.close()
+        statcode = 200
+    else:
+        restemp = requests.get(baseurl)
+        res = restemp.json()
+        saveDataToFile(restemp.json(), 'locationData.json')
+        statcode = restemp.status_code
+    return statcode, res
     
-def requestWeather(location:cClass.geolocale) -> requests.Response:
+def requestWeather(location:cClass.geolocale):
     baseurl = f"https://api.open-meteo.com/v1/forecast?latitude={location['latitude']}&longitude={location['longitude']}"
     baseurl += "&hourly=temperature_2m,precipitation,rain,pressure_msl,windspeed_10m,windgusts_10m,precipitation_probability,showers,snowfall"
     baseurl += "&current_weather=true&forecast_days=3&past_days=2"
     baseurl += "&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,precipitation_probability_min,precipitation_probability_mean,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant"
     baseurl += f"&timezone={location['timezone']}"
-    res = requests.get(baseurl)
-    saveDataToFile(res.json(), 'weatherData.json')
-    return res
+    res:requests.Response = None
+    statcode = 404
+    if constants.testmode == True:
+        tempfile = open('weatherData.json', 'r')
+        res = json.load(tempfile)
+        tempfile.close()
+        statcode = 200
+    else:
+        restemp = requests.get(baseurl)
+        res = restemp.json()
+        saveDataToFile(restemp.json(), 'weatherData.json')
+        statcode = restemp.status_code
+    return statcode, res
     
 def saveDataToFile(data, path:str):
     with open(path, 'w') as f:
         json.dump(data, f)
+        f.close()
 
 def formatWeatherCode(code:int):
     string = ""
