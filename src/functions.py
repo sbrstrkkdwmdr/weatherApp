@@ -197,17 +197,19 @@ def formatDailyInfo(data:cClass.weatherData):
     # weatherType high/low precip% wind->dir+speed(avg)
     for val in daily["time"]:
         weather = formatWeatherCode(daily["weathercode"][count])
-        weatherstring = f'{weather[1]}{weather[0]} | '
-        tempStr = f'{daily["temperature_2m_max"][count]}/{daily["temperature_2m_min"][count]}'
+        weatherstring = f'{weather[1]}{weather[0]} '
+        tempStr = f'High/low temperature: {daily["temperature_2m_max"][count]}°C/{daily["temperature_2m_min"][count]}°C'
         precipNum = ''
         if daily["precipitation_sum"][count] > 0:
-            precipNum = f'({daily["precipitation_sum"][count]})'
+            precipNum = f'({daily["precipitation_sum"][count]}mm)'
  
         precipChStr = f'{daily["precipitation_probability_mean"][count]}% chance of rain {precipNum}'
         windDir = windDirection(daily["winddirection_10m_dominant"][count])
-        windStr = f'{daily["windspeed_10m_max"][count]}km/h ({windDir["emoji"]}{windDir["short"]}{daily["winddirection_10m_dominant"][count]}°)'
-        sunrisesetStr = f'{timeOnly(daily["sunrise"][count])}->{timeOnly(daily["sunset"][count])}'
-        string = f'{val}\n{weatherstring}\n{precipChStr}\n{tempStr}\n{sunrisesetStr}\n{windStr}'
+        windDirG = windDirection(daily["winddirection_10m_dominant"][count])
+        windStr = f'Winds: {daily["windspeed_10m_max"][count]}km/h ({windDir["emoji"]}{windDir["short"]} {daily["winddirection_10m_dominant"][count]}°)'
+        windGustStr = f'Gusts: {daily["windgusts_10m_max"][count]}km/h ({windDirG["emoji"]}{windDirG["short"]} {daily["winddirection_10m_dominant"][count]}°)'
+        sunrisesetStr = f'Sunrise: {timeOnly(daily["sunrise"][count])}\nSunset: {timeOnly(daily["sunset"][count])}'
+        string = f'{val}\n{weatherstring}\n{precipChStr}\n{tempStr}\n{sunrisesetStr}\n{windStr}\n${windGustStr}'
         stringList.append(string)
         count+=1
     return stringList
