@@ -4,6 +4,8 @@ import src.customClasses as cClass
 import PySimpleGUI as sg 
 import math
 import src.define as constants
+import matplotlib.pyplot as plt 
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 def requestLocation(name:str):
     baseurl = f'https://geocoding-api.open-meteo.com/v1/search?name={name.replace(" ", "+")}&count=10&language=en&format=json'
@@ -226,3 +228,70 @@ def dailyInfoToLayout(data:str):
     ]
     return tempLayout
         
+def plot(title:str, xName:str, yName:str, xData:list, yData: list, clr,):
+    temp = plt
+    temp.plot(xData, yData, color=clr,)
+    temp.title(title, fontsize=16)
+    temp.xlabel(xName, fontsize=12)
+    temp.ylabel(yName, fontsize=12)
+    temp.grid(True)
+    return temp.gcf()
+        
+def draw(canvas, plot):
+    fcta = FigureCanvasTkAgg(plot, canvas)
+    fcta.draw()
+    fcta.get_tk_widget().pack(side='top', fill='both')
+    return fcta
+
+def dailyTicks(x, pos):
+    if pos % 24 == 0:
+        return x.split('T')[0]
+    else:
+        return x
+
+def plotCustom(
+    time:list[str],
+    temp:list[float],
+    rainch:list[float],
+    precip:list[float],
+    wind:list[float],
+    windgust:list[float],
+):
+    print('Generating graphs')
+    #rainch and precip together, wind and windgust together
+    fig, axs = plt.subplots(3)
+    axs[0].plot(time,temp, color='firebrick')
+    axs[0].set_xlabel('Time')
+    axs[0].set_ylabel('Temperature (°C)', color='firebrick')
+    axs[0].grid(True, linestyle='--', linewidth = 0.5)
+    for label in axs[0].xaxis.get_ticklabels():
+        if not label.get_position()[0] % 24 == 0:
+            label.set_visible(False)
+            
+    axs[1].plot(time, precip, color='deepskyblue')
+    axs[1].set_xlabel('Time')
+    axs[1].set_ylabel('Precipitation (mm)', color='deepskyblue')
+    axs[1].grid(True, linestyle='--', linewidth = 0.5)
+    for label in axs[1].xaxis.get_ticklabels():
+        if not label.get_position()[0] % 24 == 0:
+            label.set_visible(False)
+        
+    chanceAx = axs[1].twinx()
+    chanceAx.set_ylabel('Chance (%)', color='blue')
+    chanceAx.plot(time, rainch, color='blue')
+        
+    axs[2].plot(time, wind, color='forestgreen')
+    axs[2].set_xlabel('Time')
+    axs[2].set_ylabel('Winds (km/h)', color='forestgreen')
+    axs[2].grid(True, linestyle='--', linewidth = 0.5)
+    for label in axs[2].xaxis.get_ticklabels():
+        if not label.get_position()[0] % 24 == 0:
+            label.set_visible(False)
+        
+    gustAx = axs[2].twinx()
+    gustAx.plot(time, windgust, color='orange')
+    gustAx.set_ylabel('Gusts (km/h)', color='orange')
+    
+    fig.tight_layout()
+    return fig
+    
