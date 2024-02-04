@@ -10,8 +10,11 @@ print(f'Testmode is {constants.testmode}')
 
 input = sg.Input('', tooltip="type here to search for a region's weather", enable_events=True, key='-INPUT-', font=('Arial Bold', 20), expand_x=True, justification='left')
 
+regions = []
+list = sg.Combo([], expand_x=True, font=('Arial', 16), key='-list-', enable_events=True)
+
 dailyColumn = [
-    [sg.Text("Daily data", font=('Ubuntu', 24))],
+    [sg.Text("Daily data", font=('Ubuntu', 24), key='title')],
             [sg.TabGroup([
                 [ 
                     sg.Tab('Yesterday', [[sg.Text("null", key='day1data', visible=False)], ], key='day1'),
@@ -37,6 +40,7 @@ layout = [
     [sg.Text("Basic weather application", font=('Arial Bold', 24))], 
     [sg.Text("Search for a region here", font=('Ubuntu', 16))],
     [input],
+    [list],
     [sg.Button("SEARCH")],
     [sg.Column(dailyColumn),
              sg.VSeperator(),
@@ -44,6 +48,54 @@ layout = [
     ],
 ]
 window = sg.Window("Simple weather app idk", layout, finalize=True, size=(1280, 720), resizable=True)
+
+def returnWeather(locationData, index):
+    data = requestWeather(locationData['results'][index])
+    weatherData:cClass.weatherData = data[1]
+    if data[0] == 200:
+        # weather data ong
+        dailyData = formatDailyInfo(weatherData)
+        days = []
+        for day in dailyData:
+            days.append(day.split('\n')[0])
+            
+        print('Weather data success')
+        window['day4'].update(days[3], visible=True)
+        window['day5'].update(days[4], visible=True)
+
+        window['day1data'].update(dailyData[0], visible=True)
+        window['day2data'].update(dailyData[1], visible=True)
+        window['day3data'].update(dailyData[2], visible=True)
+        window['day4data'].update(dailyData[3], visible=True)
+        window['day5data'].update(dailyData[4], visible=True)
+        
+        locationFR = locationData['results'][index]
+        window['title'].update(f'Daily data for {locationFR["name"]}, {locationFR["country"]}')
+        
+        dataObject = weatherData['hourly']
+        time = []
+        count = 0
+        for hour in dataObject['time']:
+            if count % 24 == 0:
+                time.append(hour.split('T')[0])
+            else:
+                time.append(f'{count}')
+            count+=1
+            
+        
+        # time = dataObject['time']
+        temp = dataObject['temperature_2m']
+        chance = dataObject['precipitation_probability']
+        precip = dataObject['precipitation']
+        wind = dataObject['windspeed_10m']
+        gust = dataObject['windgusts_10m']
+        # 
+        plt.clf()
+        draw(window['-graphs-'].TKCanvas, plotCustom(time, temp, chance, precip, wind, gust))
+
+        window.Refresh()
+    else:
+        print("Error - failed to retrieve weather data")
 
 while True:
     event, values = window.read()
@@ -60,49 +112,15 @@ while True:
             locationData:cClass.geoResults = location[1]
             if location[0] == 200:
                 print('Location data success')
-                data = requestWeather(locationData['results'][0])
-                weatherData:cClass.weatherData = data[1]
-                if data[0] == 200:
-                    # weather data ong
-                    dailyData = formatDailyInfo(weatherData)
-                    days = []
-                    for day in dailyData:
-                        days.append(day.split('\n')[0])
-                        
-                    print('Weather data success')
-                    window['day4'].update(days[3], visible=True)
-                    window['day5'].update(days[4], visible=True)
-
-                    window['day1data'].update(dailyData[0], visible=True)
-                    window['day2data'].update(dailyData[1], visible=True)
-                    window['day3data'].update(dailyData[2], visible=True)
-                    window['day4data'].update(dailyData[3], visible=True)
-                    window['day5data'].update(dailyData[4], visible=True)
-                    
-                    dataObject = weatherData['hourly']
-                    time = []
-                    count = 0
-                    for hour in dataObject['time']:
-                        if count % 24 == 0:
-                           time.append(hour.split('T')[0])
-                        else:
-                            time.append(f'{count}')
-                        count+=1
-                        
-                    
-                    # time = dataObject['time']
-                    temp = dataObject['temperature_2m']
-                    chance = dataObject['precipitation_probability']
-                    precip = dataObject['precipitation']
-                    wind = dataObject['windspeed_10m']
-                    gust = dataObject['windgusts_10m']
-                    
-                    draw(window['-graphs-'].TKCanvas, plotCustom(time, temp, chance, precip, wind, gust))
-
-                    window.Refresh()
-                else:
-                    print("Error - failed to retrieve weather data")
+                regions = []
+                for region in locationData['results']:
+                    regions.append(f'{region["name"]}/{region["country"]} ({region["latitude"]},{region["longitude"]})')    
+                window['-list-'].update(values=regions, value=values['-list-'])
+                returnWeather(locationData, 0)
             else:
                 print("Error - could locate any region with the given input")
-
+    elif event == "-list-":
+        tempLocation = values['-list-']
+        index = regions.index(tempLocation)
+        returnWeather(locationData, index)
 window.close()

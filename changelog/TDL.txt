@@ -12,5 +12,5 @@ issue: fix buttons require multiple presses to work for the first time
 
 ------
 date: 2024-02-04
-status: WIP
+status: RESOLVED
 issue: add drop-down list to select city from locationData.json (show first city data, add option to switch)
