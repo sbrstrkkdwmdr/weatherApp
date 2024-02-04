@@ -4,6 +4,9 @@ from src.functions import *
 import src.customClasses as cClass
 import PySimpleGUI as sg 
 import os.path
+import src.define as constants
+
+print(f'Testmode is {constants.testmode}')
 
 input = sg.Input('', tooltip="type here to search for a region's weather", enable_events=True, key='-INPUT-', font=('Arial Bold', 20), expand_x=True, justification='left')
 
@@ -52,10 +55,12 @@ while True:
         request:str = values['-INPUT-']
         if len(request) < 1:
             print("Error - input is too short")
+            sg.popup('Your input was too short!',)
         else:
             location = requestLocation(request)
             locationData:cClass.geoResults = location[1]
             if location[0] == 200:
+                print('Location data success')
                 data = requestWeather(locationData['results'][0])
                 weatherData:cClass.weatherData = data[1]
                 if data[0] == 200:
@@ -65,7 +70,7 @@ while True:
                     for day in dailyData:
                         days.append(day.split('\n')[0])
                         
-                    print('Weather get')
+                    print('Weather data success')
                     window['day4'].update(days[3], visible=True)
                     window['day5'].update(days[4], visible=True)
 

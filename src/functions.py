@@ -12,11 +12,13 @@ def requestLocation(name:str):
     res:requests.Response = None
     statcode = 404
     if constants.testmode == True:
+        print('Getting location data from local file')
         tempfile = open('locationData.json', 'r')
         res = json.load(tempfile)
         tempfile.close()
         statcode = 200
     else:
+        print(f'Getting data from {baseurl}')
         restemp = requests.get(baseurl)
         res = restemp.json()
         saveDataToFile(restemp.json(), 'locationData.json')
@@ -32,11 +34,13 @@ def requestWeather(location:cClass.geolocale):
     res:requests.Response = None
     statcode = 404
     if constants.testmode == True:
+        print('Getting weather data from local file')
         tempfile = open('weatherData.json', 'r')
         res = json.load(tempfile)
         tempfile.close()
         statcode = 200
     else:
+        print(f'Getting data from {baseurl}')
         restemp = requests.get(baseurl)
         res = restemp.json()
         saveDataToFile(restemp.json(), 'weatherData.json')
