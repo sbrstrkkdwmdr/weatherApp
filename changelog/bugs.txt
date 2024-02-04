@@ -1,9 +1,0 @@
-format
-
-------
-date:
-issue:
-
-------
-date: 2024-02-04
-issue: search button doesn't work first few times on press
