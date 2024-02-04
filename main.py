@@ -47,7 +47,6 @@ window = sg.Window("Simple weather app idk", layout, finalize=True, size=(1280, 
 
 while True:
     event, values = window.read()
-    window.read()
     if event == "QUIT" or event == sg.WIN_CLOSED or event == "QUIT APPLICATION":
         break
     if event == "SEARCH":

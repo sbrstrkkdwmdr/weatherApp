@@ -22,3 +22,4 @@ changes:
 [FIX] update tab when data is retreived
 [QOL] re-order data around
 [ADD] added graphs
+[FIX] buttons sometimes not calling
