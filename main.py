@@ -90,12 +90,13 @@ def returnWeather(locationData, index):
         wind = dataObject['windspeed_10m']
         gust = dataObject['windgusts_10m']
         # 
-        plt.clf()
+        window['-graphs-'].TKCanvas.delete("all")
         draw(window['-graphs-'].TKCanvas, plotCustom(time, temp, chance, precip, wind, gust))
-
+        print('Finished graphs')
         window.Refresh()
     else:
-        print("Error - failed to retrieve weather data")
+        print(constants.errors['noweather'])
+        sg.popup(constants.errors['noweather'])
 
 while True:
     event, values = window.read()
@@ -105,20 +106,24 @@ while True:
         print("search")
         request:str = values['-INPUT-']
         if len(request) < 1:
-            print("Error - input is too short")
-            sg.popup('Your input was too short!',)
+            print(constants.errors['chiinput'])
+            sg.popup(constants.errors['chiinput'])
         else:
             location = requestLocation(request)
             locationData:cClass.geoResults = location[1]
             if location[0] == 200:
                 print('Location data success')
-                regions = []
-                for region in locationData['results']:
-                    regions.append(f'{region["name"]}/{region["country"]} ({region["latitude"]},{region["longitude"]})')    
-                window['-list-'].update(values=regions, value=values['-list-'])
-                returnWeather(locationData, 0)
+                if len(locationData['results']) < 1:
+                    print(constants.errors['nolocat'])
+                    sg.popup(constants.errors['nolocat'])
+                else: 
+                    regions = []
+                    for region in locationData['results']:
+                        regions.append(f'{region["name"]}/{region["country"]} ({region["latitude"]},{region["longitude"]})')    
+                    window['-list-'].update(values=regions, value=values['-list-'])
+                    returnWeather(locationData, 0)
             else:
-                print("Error - could locate any region with the given input")
+                print(constants.errors['nolocat'])
     elif event == "-list-":
         tempLocation = values['-list-']
         index = regions.index(tempLocation)

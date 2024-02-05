@@ -19,3 +19,8 @@ issue: add drop-down list to select city from locationData.json (show first city
 date: 2024-02-04
 status: WIP
 issue: graphs don't update when changing regions
+
+------
+date: 2024-02-05
+status: WIP
+issue: save data to json to reduce api calls (delete after 1h). weather data save by id, search save by input(remove spec charas)
