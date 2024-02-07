@@ -8,20 +8,22 @@ import src.define as constants
 
 print(f'Testmode is {constants.testmode}')
 
-input = sg.Input('', tooltip="type here to search for a region's weather", enable_events=True, key='-INPUT-', font=('Arial Bold', 20), expand_x=True, justification='left')
+guiinput = sg.Input('', tooltip="type here to search for a region's weather", enable_events=True, key='-INPUT-', font=('Arial Bold', 20), expand_x=True, justification='left')
 
 regions = []
-list = sg.Combo([], expand_x=True, font=('Arial', 16), key='-list-', enable_events=True)
+guilist = sg.Combo([], expand_x=True, font=('Arial', 16), key='-list-', enable_events=True)
+
+tempWeatherStr = "Date\nWeather\n?% chance of rain\nTemperature\nSunrise\nSunset\nwinds\nGusts"
 
 dailyColumn = [
     [sg.Text("Daily data", font=('Ubuntu', 24), key='title')],
             [sg.TabGroup([
                 [ 
-                    sg.Tab('Yesterday', [[sg.Text("null", key='day1data', visible=False)], ], key='day1'),
-                    sg.Tab('Today', [[sg.Text("null", key='day2data', visible=False)],], key='day2'),
-                    sg.Tab('Tomorrow', [[sg.Text("null", key='day3data', visible=False)],], key='day3'),
-                    sg.Tab('Day 4', [[sg.Text("null", key='day4data', visible=False)],], key='day4'),
-                    sg.Tab('Day 5', [[sg.Text("null", key='day5data', visible=False)],], key='day5'),
+                    sg.Tab('Yesterday', [[sg.Text(tempWeatherStr, key='day1data')], ], key='day1'),
+                    sg.Tab('Today', [[sg.Text(tempWeatherStr, key='day2data')],], key='day2'),
+                    sg.Tab('Tomorrow', [[sg.Text(tempWeatherStr, key='day3data')],], key='day3'),
+                    sg.Tab('Day 4', [[sg.Text(tempWeatherStr, key='day4data')],], key='day4'),
+                    sg.Tab('Day 5', [[sg.Text(tempWeatherStr, key='day5data')],], key='day5'),
                 ]], 
                     key='-tabgroup-', expand_x=True, expand_y=True),
            ],
@@ -39,8 +41,8 @@ graphColumn = [
 layout = [
     [sg.Text("Basic weather application", font=('Arial Bold', 24))], 
     [sg.Text("Search for a region here", font=('Ubuntu', 16))],
-    [input],
-    [list],
+    [guiinput],
+    [guilist],
     [sg.Button("SEARCH")],
     [sg.Column(dailyColumn),
              sg.VSeperator(),
@@ -48,6 +50,8 @@ layout = [
     ],
 ]
 window = sg.Window("Simple weather app idk", layout, finalize=True, size=(1280, 720), resizable=True)
+
+window.Element('day2').Select()
 
 def returnWeather(locationData, index):
     data = requestWeather(locationData['results'][index])
