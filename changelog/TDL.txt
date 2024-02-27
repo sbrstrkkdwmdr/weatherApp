@@ -24,3 +24,13 @@ issue: graphs don't update when changing regions
 date: 2024-02-05
 status: WIP
 issue: save data to json to reduce api calls (delete after 1h). weather data save by id, search save by input(remove spec charas)
+
+------
+date: 2024-02-28
+status: WIP
+issue: show more subdivisions
+
+------
+date: 2024-02-28
+status: WIP
+issue: every nth tick change colour on graph to tell which day starts when
