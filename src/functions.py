@@ -271,6 +271,15 @@ def plotCustom(
     for label in axs[0].xaxis.get_ticklabels():
         if not label.get_position()[0] % 24 == 0:
             label.set_visible(False)
+    
+    gridlines = axs[0].xaxis.get_gridlines()
+    i = 0
+    for line in gridlines:
+        if i % 12 == 0:
+            line.set_color('green')
+        if i % 24 == 0:
+            line.set_color('red')
+        i+=1
             
     axs[1].plot(time, precip, color='deepskyblue')
     axs[1].set_xlabel('Time')
@@ -283,7 +292,18 @@ def plotCustom(
     chanceAx = axs[1].twinx()
     chanceAx.set_ylabel('Chance (%)', color='blue')
     chanceAx.plot(time, rainch, color='blue')
+    
+    gridlines = axs[1].xaxis.get_gridlines()
+    i = 0
+    for line in gridlines:
+        if i % 12 == 0:
+            line.set_color('green')
+        if i % 24 == 0:
+            line.set_color('red')
+        i+=1
+
         
+
     axs[2].plot(time, wind, color='forestgreen')
     axs[2].set_xlabel('Time')
     axs[2].set_ylabel('Winds (km/h)', color='forestgreen')
@@ -296,6 +316,15 @@ def plotCustom(
     gustAx.plot(time, windgust, color='orange')
     gustAx.set_ylabel('Gusts (km/h)', color='orange')
     
+    gridlines = axs[2].xaxis.get_gridlines()
+    i = 0
+    for line in gridlines:
+        if i % 12 == 0:
+            line.set_color('green')
+        if i % 24 == 0:
+            line.set_color('red')
+        i+=1
+
     fig.tight_layout()
     return fig
     

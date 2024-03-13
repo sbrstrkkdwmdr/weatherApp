@@ -25,3 +25,4 @@ changes:
 [FIX] buttons sometimes not calling
 [ADD] location dropdown menu
 [QOL] automatically select "today" tab
+[QOL] every 24th line is red in order to distinguish each days
